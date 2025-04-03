@@ -60,11 +60,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--
+
 		<dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-security</artifactId>
 </dependency>
+
+
 
 		<dependency>
     <groupId>io.jsonwebtoken</groupId>
@@ -84,7 +86,7 @@
     <scope>runtime</scope>
 </dependency>
 
--->
+		<!---->
 		<dependency>
 			<groupId>com.basic</groupId>
 			<artifactId>demo</artifactId>

@@ -3,11 +3,11 @@
 	import java.util.Collection;
 	import java.util.List;
 	
-	import org.springframework.security.core.GrantedAuthority;
-	import org.springframework.security.core.authority.SimpleGrantedAuthority;
-	import org.springframework.security.core.userdetails.UserDetails;
-	import org.springframework.security.core.userdetails.UserDetailsService;
-	
+//import org.springframework.security.core.GrantedAuthority;
+//	import org.springframework.security.core.authority.SimpleGrantedAuthority;
+//	import org.springframework.security.core.userdetails.UserDetails;
+//	import org.springframework.security.core.userdetails.UserDetailsService;
+//
 	import jakarta.persistence.Entity;
 	import jakarta.persistence.GeneratedValue;
 	import jakarta.persistence.GenerationType;
@@ -35,7 +35,7 @@
 			private String gender;
 			private String email;
 			private String number;
-			private String role="USER";
+			private String role;
 			private String password;
 			
 		    public Customer() {
