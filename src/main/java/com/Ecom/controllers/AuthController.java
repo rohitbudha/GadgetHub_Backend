@@ -1,70 +1,77 @@
 //package com.Ecom.controllers;
 //
-//import java.util.Map;
-//
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.authentication.BadCredentialsException;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UserDetailsService;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//import com.Ecom.configs.JwtUtil;
+//import com.Ecom.configs.GoogleService;
 //import com.Ecom.models.Customer;
 //import com.Ecom.repos.CustomerRepo;
+//import com.Ecom.services.CustomerService;
+//import com.Ecom.utils.JwtUtil;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
 //
+//import java.util.Map;
+//
+//@CrossOrigin(origins = "http://localhost:3000")
 //@RestController
 //@RequestMapping("/api/auth")
 //public class AuthController {
 //
-//	
-//	@Autowired
-//    private  AuthenticationManager authenticationManager;
-//	@Autowired
-//    private  JwtUtil jwtUtil;
-////	@Autowired
-////    private  UserDetailsService userDetailsService;
-//	
-//	@Autowired
-//  private CustomerRepo customerRepo;
-//	
-//	@PostMapping("/login")
-//	public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
-//	    try {
-//	        // Authenticate the user
-//	    	
-//	    
-//	        org.springframework.security.core.Authentication authentication = authenticationManager.authenticate(
-//	                new UsernamePasswordAuthenticationToken(request.get("email"), request.get("password"))
-//	        );
+//    @Autowired
+//    private GoogleService googleService;
 //
-//	        // Get authenticated user details
-//	        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//    @Autowired
+//    private CustomerRepo customerRepo;
+//    @Autowired
+//    private CustomerService customerService;
 //
-//	        // Retrieve the customer from the database
-//	        Customer customer = customerRepo.findByEmail(userDetails.getUsername())
-//	                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//    @Autowired
+//    private JwtUtil jwtUtil;
 //
-//	        // Generate JWT token for the authenticated customer
-//	        String token = jwtUtil.generateToken(customer);
+//    //
+//    @PostMapping("/google-login")
+//    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> body) {
+//        try {
+//            // Get the token from the request body
+//            String idToken = body.get("token");
+//            System.out.println("Id Token is : " +idToken);
+//            // Verify the token with the Google service
+//            var payload = googleService.verifyToken(idToken);
 //
-//	        // Return the token in response
-//	        return ResponseEntity.ok(Map.of("token", token));
+//            // Extract necessary details from the payload
+//            String email = payload.getEmail();
+//            String name = (String) payload.get("name"); // Could be null, handle gracefully
 //
-//	    } catch (BadCredentialsException e) {
-//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid email or password"));
-//	    }
-//	}
+//            if (name == null) {
+//                name = "Unknown"; // Set a default if name is not available
+//            }
 //
-//	
+//            // Check if customer exists, otherwise register
+//            Customer user = customerService.findByEmail(email);
+//            if (user == null) {
+//                // If user doesn't exist, create a new one
+//                user = new Customer();
+//                user.setEmail(email);
+//                user.setFname(name);
+//                user.setRole("USER"); // Set the default role as "USER"
+//                customerRepo.save(user); // Save the user in the database
+//            }
+//
+//            // Generate JWT token for the user
+//            String token = jwtUtil.generateToken(email);
+//
+//            // Return the response with JWT token, role, and first name
+//            return ResponseEntity.ok(Map.of(
+//                    "token", token,
+//                    "role", user.getRole(),
+//                    "fname", user.getFname()
+//            ));
+//
+//        } catch (Exception e) {
+//            // Log the exception for debugging
+//            e.printStackTrace();
+//            // Return a response indicating an error, specifically unauthorized access
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token or authentication failed");
+//        }
+//    }
 //}
-//	

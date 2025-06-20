@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import com.Ecom.models.Customer;
 
+
 public interface CustomerService {
+    Customer findByEmail(String email);
     Customer addCustomer(Customer customer);
     List<Customer> getAllCustomers();
     Optional<Customer> getCustomerById(int id);
