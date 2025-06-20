@@ -13,8 +13,15 @@ import com.Ecom.services.CustomerService;
 @Service
 public class CustomerServiceImpl implements CustomerService{
 
+
+
 	@Autowired
 	private CustomerRepo  customerRepo;
+
+	@Override
+	public Customer findByEmail(String email) {
+		return customerRepo.findByEmail(email);
+	}
 	@Override
 	public Customer addCustomer(Customer customer) {
 		// TODO Auto-generated method stub
