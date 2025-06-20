@@ -3,7 +3,6 @@ package com.Ecom.serviceimpl;
 import com.Ecom.models.Customer;
 import com.Ecom.repos.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,16 +20,21 @@ public class CustomerDetailsServiceImpl implements UserDetailsService{
         @Override
         public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
             Customer customer = customerRepo.findByEmail(email);
-            if (customer==null) {
+            if (customer == null) {
                 throw new UsernameNotFoundException("User not found");
             }
-            // Spring Security expects roles to be prefixed with "ROLE_"
-            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + customer.getRole());
+
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + customer.getRole());
+            System.out.println("Authorities: " + Collections.singletonList(authority));
             return new org.springframework.security.core.userdetails.User(
                     customer.getEmail(),
                     customer.getPassword(),
                     Collections.singletonList(authority)
+
+
             );
+
+
         }
     }
 

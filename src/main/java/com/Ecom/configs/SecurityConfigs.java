@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfigs {
 
     @Autowired
@@ -31,8 +33,11 @@ public class SecurityConfigs {
                 .csrf(csrf -> csrf.disable())  // Disable CSRF for APIs
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/customers/**", "/api/auth/register").permitAll()  // Public APIs
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // Only ADMIN can access
+                        .requestMatchers("/admin/**","/product/**").hasRole("ADMIN")
+                                //.requestMatchers("/admin/**").hasAuthority("ADMIN")// Only ADMIN can access
                         .anyRequest().authenticated() // All other requests require authentication
+
+
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
 
