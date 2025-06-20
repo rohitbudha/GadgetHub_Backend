@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.Ecom.models.Customer;
 import com.Ecom.repos.CustomerRepo;
 import com.Ecom.services.CustomerService;
 
+@Service
 public class CustomerServiceImpl implements CustomerService{
 
 	@Autowired
